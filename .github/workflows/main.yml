@@ -1,0 +1,25 @@
+name: Daily Activity Bot
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # This runs every day at 12:00 PM
+  workflow_dispatch: # This allows you to run it manually
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update activity log
+        run: |
+          echo "Activity on: $(date)" >> activity_log.txt
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add activity_log.txt
+          git commit -m "chore: daily activity update [skip ci]" || exit 0
+          git push
